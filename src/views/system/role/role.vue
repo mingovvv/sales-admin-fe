@@ -95,7 +95,7 @@
 
   const actionColumn = reactive({
     width: 250,
-    title: '操作',
+    title: '액션',
     key: 'action',
     fixed: 'right',
     render(record) {

@@ -29,7 +29,7 @@
             <n-switch v-model:value="isStriped" @update:value="setStriped" />
           </div>
         </template>
-        <span>表格斑马纹</span>
+        <span>토글</span>
       </n-tooltip>
       <n-divider vertical />
 
