@@ -24,7 +24,7 @@
               <PlusOutlined />
             </n-icon>
           </template>
-          매출 등록
+          인보이스 등록
         </n-button>
       </template>
 
@@ -37,33 +37,55 @@
         :rules="rules"
         ref="formRef"
         label-placement="left"
-        :label-width="80"
+        :label-width="120"
         class="py-4"
       >
-        <n-form-item label="인보이스 번호" path="name">
-          <n-input placeholder="MING20250107" v-model:value="formParams.name" />
+        <n-form-item label="인보이스 번호" path="invoiceNo">
+          <n-input placeholder="MING20250107" v-model:value="formParams.invoiceNo" />
         </n-form-item>
-        <n-form-item label="제품명" path="address">
-          <n-input placeholder="MING20250107" v-model:value="formParams.name" />
-<!--          <n-input type="textarea" placeholder="请输入地址" v-model:value="formParams.address" />-->
+        <n-form-item label="제품명" path="product">
+          <n-select
+            :options="productList"
+            placeholder="제품을 선택하세요."
+            v-model:value="formParams.product"
+            filterable
+          />
         </n-form-item>
-        <n-form-item label="판매수량" path="address">
-          <n-input placeholder="MING20250107" v-model:value="formParams.name" />
-          <!--          <n-input type="textarea" placeholder="请输入地址" v-model:value="formParams.address" />-->
+        <n-form-item label="통화" path="currency">
+          <n-radio-group v-model:value="formParams.currency">
+            <n-radio-button
+              v-for="cur in currency"
+              :key="cur.value"
+              :value="cur.value"
+              :label="cur.label"
+            />
+          </n-radio-group>
         </n-form-item>
-        <n-form-item label="판매단가" path="address">
-          <n-input placeholder="MING20250107" v-model:value="formParams.name" />
-          <!--          <n-input type="textarea" placeholder="请输入地址" v-model:value="formParams.address" />-->
+        <n-form-item label="판매수량" path="quantity">
+          <n-input-number
+            placeholder="수량을 입력하세요."
+            v-model:value="formParams.quantity"
+            clearable
+          />
         </n-form-item>
-        <n-form-item label="日期" path="date">
-          <n-date-picker type="datetime" placeholder="请选择日期" v-model:value="formParams.date" />
+        <n-form-item label="판매단가" path="unitPrice">
+          <n-input-number placeholder="판매단가를 입력하세요." v-model:value="formParams.unitPrice">
+            <template #prefix>{{ currencyPrefix }}</template>
+          </n-input-number>
+        </n-form-item>
+        <n-form-item label="판매일" path="date">
+          <n-date-picker
+            type="datetime"
+            placeholder="날짜를 선택하세요."
+            v-model:value="formParams.date"
+          />
         </n-form-item>
       </n-form>
 
       <template #action>
         <n-space>
-          <n-button @click="() => (showModal = false)">取消</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">确定</n-button>
+          <n-button @click="() => (showModal = false)">취소</n-button>
+          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">등록</n-button>
         </n-space>
       </template>
     </n-modal>
@@ -71,7 +93,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref } from 'vue';
+  import { computed, h, reactive, ref} from 'vue';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { getTableList } from '@/api/table/list';
@@ -80,57 +102,90 @@
   import { useRouter } from 'vue-router';
   import { type FormRules } from 'naive-ui';
 
-  const rules: FormRules = {
-    name: {
-      required: true,
-      trigger: ['blur', 'input'],
-      message: '请输入名称',
+  const currency = [
+    { value: 'KRW', label: '원', symbol: '₩' },
+    { value: 'USD', label: '달러', symbol: '$' },
+    { value: 'EUR', label: '유로', symbol: '€' },
+    { value: 'GBP', label: '파운드', symbol: '£' },
+  ];
+
+  const currencyPrefix = computed(() => {
+    const selectedCurrency = currency.find((cur) => cur.value === formParams.currency);
+    return selectedCurrency ? selectedCurrency.symbol : '₩';
+  });
+
+  const productList = [
+    {
+      label: '제품1',
+      value: 1,
     },
-    address: {
+    {
+      label: '제품2',
+      value: 2,
+    },
+    {
+      label: '제품3',
+      value: 3,
+    },
+  ];
+
+  const rules: FormRules = {
+    invoiceNo: {
       required: true,
       trigger: ['blur', 'input'],
-      message: '请输入地址',
+      message: '인보이스 번호를 입력하세요.',
+    },
+    product: {
+      type: 'number',
+      required: true,
+      trigger: ['blur', 'change'],
+      message: '제품을 선택하세요.',
+    },
+    currency: {
+      required: true,
+      trigger: ['blur', 'change'],
+      message: '결제 통화를 선택하세요.',
+    },
+    quantity: {
+      type: 'number',
+      required: true,
+      trigger: ['blur', 'input'],
+      message: '수량을 입력하세요.',
+    },
+    unitPrice: {
+      type: 'number',
+      required: true,
+      trigger: ['blur', 'input'],
+      message: '단가를 입력하세요.',
     },
     date: {
       type: 'number',
       required: true,
       trigger: ['blur', 'change'],
-      message: '请选择日期',
+      message: '판매일을 입력하세요.',
     },
   };
 
   const schemas: FormSchema[] = [
     {
       field: 'name',
-      labelMessage: '这是一个提示',
+      // labelMessage: '这是一个提示',
       component: 'NInput',
       label: '고객명',
       componentProps: {
-        placeholder: '请输入姓名',
-        onInput: (e: any) => {
-          console.log(e);
-        },
+        // placeholder: '请输入姓名',
+        // onInput: (e: any) => {
+        //   console.log(e);
+        // },
       },
       rules: [{ required: true, message: '请输入姓名', trigger: ['blur'] }],
     },
     {
-      field: 'mobile',
-      component: 'NInputNumber',
-      label: '手机',
-      componentProps: {
-        placeholder: '请输入手机号码',
-        showButton: false,
-        onInput: (e: any) => {
-          console.log(e);
-        },
-      },
-    },
-    {
       field: 'type',
       component: 'NSelect',
-      label: '类型',
+      label: '제품명',
       componentProps: {
-        placeholder: '请选择类型',
+        placeholder: '유형을 선택하세요.',
         options: [
           {
             label: '舒适性',
@@ -149,7 +204,7 @@
     {
       field: 'makeDate',
       component: 'NDatePicker',
-      label: '预约时间',
+      label: '판매일',
       defaultValue: 1183135260000,
       componentProps: {
         type: 'date',
@@ -230,8 +285,11 @@
   const showModal = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
-    name: '',
-    address: '',
+    invoiceNo: '',
+    product: null,
+    currency: null,
+    quantity: '',
+    unitPrice: '',
     date: null,
   });
 
