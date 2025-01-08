@@ -33,30 +33,53 @@ export const columns: BasicColumn<ListData>[] = [
   {
     title: '고객명',
     key: 'name',
+    editComponent: 'NInput',
+    editRow: true,
+    editRule: true,
+    edit: true,
   },
   {
     title: '담당자명',
     key: 'name',
+    editComponent: 'NInput',
+    editRow: true,
+    editRule: true,
+    edit: true,
   },
   {
     title: '제품명',
     key: 'name',
+    editComponent: 'NSelect',
+    editComponentProps: {
+      options: [
+        {
+          label: '제품1',
+          value: 1,
+        },
+        {
+          label: '제품2',
+          value: 2,
+        },
+      ],
+    },
+    editRow: true,
+    edit: true,
   },
   {
     title: '판매수량',
-    key: 'email',
+    key: 'quantity',
   },
   {
     title: '판매단가',
-    key: 'city',
+    key: 'unitPrice',
   },
   {
-    title: '총 판매 금액(달러)',
-    key: 'city',
+    title: '총 판매 금액',
+    key: 'totalAmount',
   },
   {
     title: '총 판매 금액(원화)',
-    key: 'city',
+    key: 'totalAmount',
   },
   {
     title: '판매일',
@@ -65,25 +88,33 @@ export const columns: BasicColumn<ListData>[] = [
   {
     title: '입금일',
     key: 'createDate',
+    editComponent: 'NDatePicker',
+    editRow: true,
+    edit: true,
   },
   {
-    title: '상태',
-    key: 'status',
-    render(record) {
-      return h(
-        NTag,
-        {
-          type:
-            record.status === 'close'
-              ? 'default'
-              : record.status === 'refuse'
-              ? 'error'
-              : 'success',
-        },
-        {
-          default: () => statusMap[record.status],
-        }
-      );
-    },
+    title: '비고',
+    key: 'memo',
   },
+  // todo 입금일을 알 필요가 있을까?
+  // {
+  //   title: '상태',
+  //   key: 'status',
+  //   render(record) {
+  //     return h(
+  //       NTag,
+  //       {
+  //         type:
+  //           record.status === 'close'
+  //             ? 'default'
+  //             : record.status === 'refuse'
+  //             ? 'error'
+  //             : 'success',
+  //       },
+  //       {
+  //         default: () => statusMap[record.status],
+  //       }
+  //     );
+  //   },
+  // },
 ];

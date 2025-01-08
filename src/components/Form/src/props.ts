@@ -54,12 +54,12 @@ export const basicProps = {
   // 确认按钮文字
   submitButtonText: {
     type: String,
-    default: '查询',
+    default: '조회',
   },
   //重置按钮文字
   resetButtonText: {
     type: String,
-    default: '重置',
+    default: '초기화',
   },
   //grid 配置
   gridProps: Object as PropType<GridProps>,

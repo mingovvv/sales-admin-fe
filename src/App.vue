@@ -1,10 +1,10 @@
 <template>
   <NConfigProvider
     v-if="!isLock"
-    :locale="zhCN"
+    :locale="koKR"
     :theme="getDarkTheme"
     :theme-overrides="getThemeOverrides"
-    :date-locale="dateZhCN"
+    :date-locale="dateKoKR"
   >
     <AppProvider>
       <RouterView />

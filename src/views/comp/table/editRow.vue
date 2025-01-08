@@ -1,7 +1,7 @@
 <template>
   <n-card :bordered="false" class="proCard">
     <BasicTable
-      title="表格列表"
+      title="넌어디2"
       titleTooltip="这是一个提示"
       :columns="columns"
       :request="loadDataTable"

@@ -15,7 +15,14 @@ function tableList(pageSize: number) {
       status: faker.helpers.arrayElement(['close', 'refuse', 'pass']),
       type: faker.helpers.arrayElement(['person', 'company']),
       // createDate: faker.helpers.arrayElement(dateStrs),
-      createDate: dayjs(faker.date.anytime()).format('YYYY-MM-DD HH:mm'),
+      createDate: dayjs(faker.date.anytime()).format('YYYY-MM-DD'),
+      quantity: faker.string.numeric(2),
+      unitPrice: faker.string.numeric(4),
+      totalAmount: faker.string.numeric(6),
+      productName: faker.word.words(2),
+      standardPrice: faker.string.numeric(4),
+      productType: faker.helpers.arrayElement(['aa', 'bb']),
+      comment: faker.lorem.sentence(),
     });
   });
   return result;

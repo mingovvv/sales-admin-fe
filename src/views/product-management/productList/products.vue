@@ -19,86 +19,9 @@
       :scroll-x="1090"
       :striped="true"
     >
-      <template #tableTitle>
-        <n-button type="primary" @click="addTable">
-          <template #icon>
-            <n-icon>
-              <PlusOutlined />
-            </n-icon>
-          </template>
-          인보이스 등록
-        </n-button>
-      </template>
-
       <template #toolbar> </template>
     </BasicTable>
 
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="매출 등록">
-      <n-form
-        :model="formParams"
-        :rules="rules"
-        ref="formRef"
-        label-placement="left"
-        :label-width="120"
-        class="py-4"
-      >
-        <n-form-item label="인보이스 번호" path="invoiceNo">
-          <n-input placeholder="MING20250107" v-model:value="formParams.invoiceNo" />
-        </n-form-item>
-        <n-form-item label="고객명" path="customer">
-          <n-select
-            :options="customerList"
-            placeholder="고객을 선택하세요."
-            v-model:value="formParams.customer"
-            filterable
-          />
-        </n-form-item>
-        <n-form-item label="제품명" path="product">
-          <n-select
-            :options="productList"
-            placeholder="제품을 선택하세요."
-            v-model:value="formParams.product"
-            filterable
-          />
-        </n-form-item>
-        <n-form-item label="통화" path="currency">
-          <n-radio-group v-model:value="formParams.currency">
-            <n-radio-button
-              v-for="cur in currency"
-              :key="cur.value"
-              :value="cur.value"
-              :label="cur.label"
-            />
-          </n-radio-group>
-        </n-form-item>
-        <n-form-item label="판매수량" path="quantity">
-          <n-input-number
-            placeholder="수량을 입력하세요."
-            v-model:value="formParams.quantity"
-            clearable
-          />
-        </n-form-item>
-        <n-form-item label="판매단가" path="unitPrice">
-          <n-input-number placeholder="판매단가를 입력하세요." v-model:value="formParams.unitPrice">
-            <template #prefix>{{ currencyPrefix }}</template>
-          </n-input-number>
-        </n-form-item>
-        <n-form-item label="판매일" path="date">
-          <n-date-picker
-            type="datetime"
-            placeholder="날짜를 선택하세요."
-            v-model:value="formParams.date"
-          />
-        </n-form-item>
-      </n-form>
-
-      <template #action>
-        <n-space>
-          <n-button @click="() => (showModal = false)">취소</n-button>
-          <n-button type="info" :loading="formBtnLoading" @click="confirmForm">등록</n-button>
-        </n-space>
-      </template>
-    </n-modal>
   </n-card>
 </template>
 
@@ -113,48 +36,6 @@
   import { type FormRules } from 'naive-ui';
 
   const currentEditKeyRef = ref('');
-
-  const currency = [
-    { value: 'KRW', label: '원', symbol: '₩' },
-    { value: 'USD', label: '달러', symbol: '$' },
-    { value: 'EUR', label: '유로', symbol: '€' },
-    { value: 'GBP', label: '파운드', symbol: '£' },
-  ];
-
-  const currencyPrefix = computed(() => {
-    const selectedCurrency = currency.find((cur) => cur.value === formParams.currency);
-    return selectedCurrency ? selectedCurrency.symbol : '₩';
-  });
-
-  const customerList = [
-    {
-      label: '고객1',
-      value: 1,
-    },
-    {
-      label: '고객2',
-      value: 2,
-    },
-    {
-      label: '고객3',
-      value: 3,
-    },
-  ];
-
-  const productList = [
-    {
-      label: '제품1',
-      value: 1,
-    },
-    {
-      label: '제품2',
-      value: 2,
-    },
-    {
-      label: '제품3',
-      value: 3,
-    },
-  ];
 
   const rules: FormRules = {
     invoiceNo: {
@@ -329,36 +210,6 @@
     date: null,
   });
 
-  // const actionColumn = reactive({
-  //   width: 150,
-  //   title: '액션',
-  //   key: 'action',
-  //   fixed: 'right',
-  //   render(record) {
-  //     return h(TableAction as any, {
-  //       style: 'button',
-  //       actions: [
-  //         {
-  //           label: '대기중',
-  //           onClick: handleDelete.bind(null, record),
-  //           ifShow: () => {
-  //             return true;
-  //           },
-  //           auth: ['basic_list'],
-  //         },
-  //         {
-  //           label: '완료',
-  //           onClick: handleEdit.bind(null, record),
-  //           ifShow: () => {
-  //             return true;
-  //           },
-  //           auth: ['basic_list'],
-  //         },
-  //       ],
-  //     });
-  //   },
-  // });
-
   const actionColumn = reactive({
     width: 150,
     title: '액션',
@@ -446,11 +297,6 @@
       formBtnLoading.value = false;
     });
   }
-
-  // function handleEdit(record: Recordable) {
-  //   console.log('点击了编辑', record);
-  //   router.push({ name: 'basic-info', params: { id: record.id } });
-  // }
 
   function handleEdit(record) {
     currentEditKeyRef.value = record.key;

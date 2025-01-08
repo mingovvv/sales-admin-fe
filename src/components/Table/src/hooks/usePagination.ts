@@ -32,7 +32,7 @@ export function usePagination(refProps: ComputedRef<BasicTableProps>) {
       pageSizes: PAGESIZES, // 每页条数
       showSizePicker: true,
       showQuickJumper: true,
-      prefix: (pagingInfo) => `共 ${pagingInfo.itemCount} 条`, // 不需要可以通过 pagination 重置或者删除
+      prefix: (pagingInfo) => `총 ${pagingInfo.itemCount} 건`, // 不需要可以通过 pagination 重置或者删除
       ...(isBoolean(pagination) ? {} : pagination),
       ...unref(configRef),
     };
