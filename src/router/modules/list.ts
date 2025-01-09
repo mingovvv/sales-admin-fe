@@ -35,37 +35,6 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
-  {
-    path: '/list',
-    name: 'List',
-    redirect: '/list/sales-list',
-    component: Layout,
-    meta: {
-      title: '列表页面',
-      icon: renderIcon(TableOutlined),
-      sort: 2,
-    },
-    children: [
-      {
-        path: 'sales-list',
-        name: 'sales-list',
-        meta: {
-          title: 'Sales',
-        },
-        component: () => import('@/views/list/salesList/sales.vue'),
-      },
-      {
-        path: 'sales-info/:id?',
-        name: 'sales-info',
-        meta: {
-          title: '基础详情',
-          hidden: true,
-          activeMenu: 'sales-list',
-        },
-        component: () => import('@/views/list/salesList/info.vue'),
-      },
-    ],
-  },
 ];
 
 export default routes;

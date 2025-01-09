@@ -70,8 +70,8 @@
             </n-form-item>
             <div style="margin-left: 80px">
               <n-space>
-                <n-button type="primary" @click="formSubmit">提交预约</n-button>
-                <n-button @click="resetForm">重置</n-button>
+                <n-button type="primary" @click="formSubmit">zczc</n-button>
+                <n-button @click="resetForm">vzxvxzx</n-button>
               </n-space>
             </div>
           </n-form>

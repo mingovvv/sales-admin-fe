@@ -23,15 +23,15 @@
       <slot name="toolbar"></slot>
 
       <!--斑马纹-->
-      <n-tooltip trigger="hover">
-        <template #trigger>
-          <div class="mr-2 table-toolbar-right-icon">
-            <n-switch v-model:value="isStriped" @update:value="setStriped" />
-          </div>
-        </template>
-        <span>토글</span>
-      </n-tooltip>
-      <n-divider vertical />
+<!--      <n-tooltip trigger="hover">-->
+<!--        <template #trigger>-->
+<!--          <div class="mr-2 table-toolbar-right-icon">-->
+<!--            <n-switch v-model:value="isStriped" @update:value="setStriped" />-->
+<!--          </div>-->
+<!--        </template>-->
+<!--        <span>토글</span>-->
+<!--      </n-tooltip>-->
+<!--      <n-divider vertical />-->
 
       <!--刷新-->
       <n-tooltip trigger="hover">
@@ -42,7 +42,7 @@
             </n-icon>
           </div>
         </template>
-        <span>刷新</span>
+        <span>데이터 새로고침</span>
       </n-tooltip>
 
       <!--密度-->
@@ -61,7 +61,7 @@
             </n-dropdown>
           </div>
         </template>
-        <span>密度</span>
+        <span>글씨 크기</span>
       </n-tooltip>
 
       <!--表格设置单独抽离成组件-->
@@ -107,17 +107,17 @@
   const densityOptions = [
     {
       type: 'menu',
-      label: '紧凑',
+      label: '작게',
       key: 'small',
     },
     {
       type: 'menu',
-      label: '默认',
+      label: '중간',
       key: 'medium',
     },
     {
       type: 'menu',
-      label: '宽松',
+      label: '크게',
       key: 'large',
     },
   ];

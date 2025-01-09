@@ -32,7 +32,7 @@ import SafetySetting from './SafetySetting.vue';
 const typeTabList = [
   {
     name: '제품 등록',
-    desc: '사내 판매 가능한 제품을 등록합니다. 등록된 제품은 판매관리 패이지에서 사용됩니다.',
+    desc: '사내 판매 가능한 제품을 등록합니다. 등록된 제품은 판매관리 패이지에서 활용됩니다.',
     key: 1,
   },
   // {

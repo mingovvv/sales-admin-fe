@@ -7,6 +7,11 @@ function tableList(pageSize: number) {
   doCustomTimes(pageSize, () => {
     result.push({
       id: faker.string.numeric(4),
+      customerId: faker.string.numeric(4),
+      customerName: faker.person.firstName(),
+      employeeName: faker.person.firstName(),
+      countryName: faker.location.country(),
+      customerType: faker.helpers.arrayElement(['EXISTING', 'NEW']),
       name: faker.person.firstName(),
       sex: faker.person.sexType(),
       avatar: `https://picsum.photos/200/200?v=${faker.string.numeric(4)}`,

@@ -1,6 +1,6 @@
 import { RouteRecordRaw } from 'vue-router';
 import { Layout } from '@/router/constant';
-import { SettingOutlined } from '@vicons/antd';
+import { DropboxOutlined } from '@vicons/antd';
 import { renderIcon } from '@/utils/index';
 
 const routes: Array<RouteRecordRaw> = [
@@ -11,8 +11,8 @@ const routes: Array<RouteRecordRaw> = [
     component: Layout,
     meta: {
       title: '제품관리',
-      icon: renderIcon(SettingOutlined),
-      sort: 5,
+      icon: renderIcon(DropboxOutlined),
+      sort: 0.91,
     },
     children: [
       {

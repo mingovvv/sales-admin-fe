@@ -205,24 +205,24 @@
         const isDisabled = tabsList.value.length <= 1;
         return [
           {
-            label: '刷新当前',
+            label: '새로고침',
             key: '1',
             icon: renderIcon(ReloadOutlined),
           },
           {
-            label: `关闭当前`,
+            label: `현재 페이지 닫기`,
             key: '2',
             disabled: isCurrent.value || isDisabled,
             icon: renderIcon(CloseOutlined),
           },
           {
-            label: '关闭其他',
+            label: '다른 페이지 닫기',
             key: '3',
             disabled: isDisabled,
             icon: renderIcon(ColumnWidthOutlined),
           },
           {
-            label: '关闭全部',
+            label: '모든 페이지 닫기',
             key: '4',
             disabled: isDisabled,
             icon: renderIcon(MinusOutlined),

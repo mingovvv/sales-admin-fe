@@ -10,7 +10,7 @@
     <BasicTable
       :columns="columns"
       :request="loadDataTable"
-      :row-key="(row:ListData) => row.id"
+      :row-key="(row:ListData) => row.customerId"
       ref="actionRef"
       :actionColumn="actionColumn"
       @edit-end="editEnd"
@@ -26,14 +26,14 @@
               <PlusOutlined />
             </n-icon>
           </template>
-          인보이스 등록
+          고객 등록
         </n-button>
       </template>
 
       <template #toolbar> </template>
     </BasicTable>
 
-    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="매출 등록">
+    <n-modal v-model:show="showModal" :show-icon="false" preset="dialog" title="고객 등록">
       <n-form
         :model="formParams"
         :rules="rules"
@@ -42,18 +42,20 @@
         :label-width="120"
         class="py-4"
       >
-        <n-form-item label="인보이스 번호" path="invoiceNo">
-          <n-input placeholder="MING20250107" v-model:value="formParams.invoiceNo" />
+        <n-form-item label="고객명" path="customerName">
+          <n-input placeholder="MING20250107" v-model:value="formParams.customerName" />
         </n-form-item>
-        <n-form-item label="고객명" path="customer">
+
+        <n-form-item label="국가" path="customer">
           <n-select
-            :options="customerList"
-            placeholder="고객을 선택하세요."
+            :options="countryList"
+            placeholder="국가를 선택하세요."
             v-model:value="formParams.customer"
             filterable
           />
         </n-form-item>
-        <n-form-item label="제품명" path="product">
+
+        <n-form-item label="담당자" path="product">
           <n-select
             :options="productList"
             placeholder="제품을 선택하세요."
@@ -61,29 +63,8 @@
             filterable
           />
         </n-form-item>
-        <n-form-item label="통화" path="currency">
-          <n-radio-group v-model:value="formParams.currency">
-            <n-radio-button
-              v-for="cur in currency"
-              :key="cur.value"
-              :value="cur.value"
-              :label="cur.label"
-            />
-          </n-radio-group>
-        </n-form-item>
-        <n-form-item label="판매수량" path="quantity">
-          <n-input-number
-            placeholder="수량을 입력하세요."
-            v-model:value="formParams.quantity"
-            clearable
-          />
-        </n-form-item>
-        <n-form-item label="판매단가" path="unitPrice">
-          <n-input-number placeholder="판매단가를 입력하세요." v-model:value="formParams.unitPrice">
-            <template #prefix>{{ currencyPrefix }}</template>
-          </n-input-number>
-        </n-form-item>
-        <n-form-item label="판매일" path="date">
+
+        <n-form-item label="등록일" path="date">
           <n-date-picker
             type="datetime"
             placeholder="날짜를 선택하세요."
@@ -93,14 +74,14 @@
       </n-form>
 
       <template #action>
-        <n-space style="margin-right: auto">
-          <n-upload
-            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-            @before-upload="beforeUpload"
-          >
-            <n-button type="error">엑셀 업로드</n-button>
-          </n-upload>
-        </n-space>
+<!--        <n-space style="margin-right: auto">-->
+<!--          <n-upload-->
+<!--            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"-->
+<!--            @before-upload="beforeUpload"-->
+<!--          >-->
+<!--            <n-button type="error">엑셀 업로드</n-button>-->
+<!--          </n-upload>-->
+<!--        </n-space>-->
         <n-space>
           <n-button @click="() => (showModal = false)">취소</n-button>
           <n-button type="info" :loading="formBtnLoading" @click="confirmForm">등록</n-button>
@@ -111,7 +92,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, h, reactive, ref } from 'vue';
+  import { computed, h, onMounted, reactive, ref } from 'vue';
   import { BasicTable, TableAction } from '@/components/Table';
   import { BasicForm, FormSchema, useForm } from '@/components/Form/index';
   import { getTableList } from '@/api/table/list';
@@ -119,35 +100,39 @@
   import { PlusOutlined } from '@vicons/antd';
   import { useRouter } from 'vue-router';
   import { type FormRules } from 'naive-ui';
+  import { Alova } from '@/utils/http/alova';
 
   const currentEditKeyRef = ref('');
 
-  const currency = [
-    { value: 'KRW', label: '원', symbol: '₩' },
-    { value: 'USD', label: '달러', symbol: '$' },
-    { value: 'EUR', label: '유로', symbol: '€' },
-    { value: 'GBP', label: '파운드', symbol: '£' },
-  ];
+  // 국가명 리스트
+  const countryList = ref<Array<{ label: string; value: string }>>([]);
+  const loading = ref(false); // 로딩 상태
 
-  const currencyPrefix = computed(() => {
-    const selectedCurrency = currency.find((cur) => cur.value === formParams.currency);
-    return selectedCurrency ? selectedCurrency.symbol : '₩';
+  const fetchCustomerList = async () => {
+    loading.value = true;
+    try {
+      const response: any = await Alova.Get('https://restcountries.com/v3.1/all', {
+        meta: {
+          isReturnNativeResponse: true,
+        },
+      });
+      // 국가명을 정렬하여 셀렉트 옵션 구성
+      countryList.value = response
+        .map((country) => ({
+          label: country.translations?.kor?.common || country.name.common, // 한국어 이름
+          value: country.cca2, // 국가 코드
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+    } catch (error) {
+      console.error('국가명 리스트를 가져오는 중 오류가 발생했습니다:', error);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  onMounted(() => {
+    fetchCustomerList();
   });
-
-  const customerList = [
-    {
-      label: '고객1',
-      value: 1,
-    },
-    {
-      label: '고객2',
-      value: 2,
-    },
-    {
-      label: '고객3',
-      value: 3,
-    },
-  ];
 
   const productList = [
     {
@@ -165,44 +150,26 @@
   ];
 
   const rules: FormRules = {
-    invoiceNo: {
+    customerName: {
       required: true,
       trigger: ['blur', 'input'],
-      message: '인보이스 번호를 입력하세요.',
+      message: '고객명을 입력하세요.',
     },
-    customer: {
+    countryName: {
       required: true,
       trigger: ['blur', 'change'],
-      message: '고객명을 선택하세요.',
+      message: '국가명을 선택하세요.',
     },
-    product: {
+    employeeName: {
       type: 'number',
       required: true,
       trigger: ['blur', 'change'],
-      message: '제품을 선택하세요.',
+      message: '직원명을 선택하세요.',
     },
-    currency: {
+    createdDt: {
       required: true,
       trigger: ['blur', 'change'],
       message: '결제 통화를 선택하세요.',
-    },
-    quantity: {
-      type: 'number',
-      required: true,
-      trigger: ['blur', 'input'],
-      message: '수량을 입력하세요.',
-    },
-    unitPrice: {
-      type: 'number',
-      required: true,
-      trigger: ['blur', 'input'],
-      message: '단가를 입력하세요.',
-    },
-    date: {
-      type: 'number',
-      required: true,
-      trigger: ['blur', 'change'],
-      message: '판매일을 입력하세요.',
     },
   };
 
@@ -256,48 +223,7 @@
         },
       },
     },
-    // {
-    //   field: 'makeTime',
-    //   component: 'NTimePicker',
-    //   label: '停留时间',
-    //   componentProps: {
-    //     clearable: true,
-    //     onUpdateValue: (e: any) => {
-    //       console.log(e);
-    //     },
-    //   },
-    // },
-    // {
-    //   field: 'status',
-    //   label: '状态',
-    //   //插槽
-    //   slot: 'statusSlot',
-    // },
-    // {
-    //   field: 'makeProject',
-    //   component: 'NCheckbox',
-    //   label: '预约项目',
-    //   componentProps: {
-    //     placeholder: '请选择预约项目',
-    //     options: [
-    //       {
-    //         label: '种牙',
-    //         value: 1,
-    //       },
-    //       {
-    //         label: '补牙',
-    //         value: 2,
-    //       },
-    //       {
-    //         label: '根管',
-    //         value: 3,
-    //       },
-    //     ],
-    //     onUpdateChecked: (e: any) => {
-    //       console.log(e);
-    //     },
-    //   },
-    // },
+
     {
       field: 'makeSource',
       component: 'NRadioGroup',
@@ -328,44 +254,11 @@
   const showModal = ref(false);
   const formBtnLoading = ref(false);
   const formParams = reactive({
-    invoiceNo: '',
-    customer: null,
-    product: null,
-    currency: null,
-    quantity: '',
-    unitPrice: '',
-    date: null,
+    customerName: null,
+    countryName: null,
+    employeeName: null,
+    createDate: null,
   });
-
-  // const actionColumn = reactive({
-  //   width: 150,
-  //   title: '액션',
-  //   key: 'action',
-  //   fixed: 'right',
-  //   render(record) {
-  //     return h(TableAction as any, {
-  //       style: 'button',
-  //       actions: [
-  //         {
-  //           label: '대기중',
-  //           onClick: handleDelete.bind(null, record),
-  //           ifShow: () => {
-  //             return true;
-  //           },
-  //           auth: ['basic_list'],
-  //         },
-  //         {
-  //           label: '완료',
-  //           onClick: handleEdit.bind(null, record),
-  //           ifShow: () => {
-  //             return true;
-  //           },
-  //           auth: ['basic_list'],
-  //         },
-  //       ],
-  //     });
-  //   },
-  // });
 
   const actionColumn = reactive({
     width: 150,
@@ -480,7 +373,7 @@
   }
 
   function editEnd({ value }) {
-    console.log('editEnd::: ',value);
+    console.log('editEnd::: ', value);
   }
 
   function onEditChange({ column, value, record }) {
@@ -492,7 +385,6 @@
     console.log('record::', record);
 
     // 변경된 record를 저장해야함
-
   }
 </script>
 

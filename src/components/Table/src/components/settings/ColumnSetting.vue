@@ -12,14 +12,14 @@
             <div class="table-toolbar-inner-popover-title">
               <n-space>
                 <n-checkbox v-model:checked="checkAll" @update:checked="onCheckAll"
-                  >列展示</n-checkbox
+                  >전체선택</n-checkbox
                 >
-                <n-checkbox v-model:checked="selection" @update:checked="onSelection"
-                  >勾选列</n-checkbox
-                >
-                <n-button text type="info" size="small" class="mt-1" @click="resetColumns"
-                  >重置</n-button
-                >
+<!--                <n-checkbox v-model:checked="selection" @update:checked="onSelection"-->
+<!--                  >컬럼추가</n-checkbox-->
+<!--                >-->
+<!--                <n-button text type="info" size="small" class="mt-1" @click="resetColumns"-->
+<!--                  >확인</n-button-->
+<!--                >-->
               </n-space>
             </div>
           </template>
@@ -87,7 +87,7 @@
         </n-popover>
       </div>
     </template>
-    <span>列设置</span>
+    <span>테이블 설정</span>
   </n-tooltip>
 </template>
 
